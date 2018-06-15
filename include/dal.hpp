@@ -55,7 +55,7 @@ class DAL{
 		inline friend
 			std::ostream &operator<<( std::ostream & _os, const DAL & _oList ){
 				_os << "[\n";
-				for( int i = 0; i < _oList.mi_Lenght; i++ ){
+				for( int i = 0; i < _oList.mi_Capacity; i++ ){
 					_os << "\t{" << _oList.mpt_Data[i].id << ",\t'"
 						<< _oList.mpt_Data[i].info << "'}\n";
 				}

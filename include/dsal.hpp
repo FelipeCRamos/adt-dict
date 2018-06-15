@@ -26,7 +26,13 @@ class DSAL : public DAL{
 		/** Retrieves on `_y` the prev key to `_x`, if exists (true) */
 		bool predecessor( const Key & _x, Key & _y ) const;
 	private:
+
 		int _search( const Key & _x ) const;
+
+		size_t where( const Key & _x, const bool _flag ) const;
+
+		size_t reserve( const size_t _size, const Key & _x );
+			
 };
 
 #include "dsal.inl"

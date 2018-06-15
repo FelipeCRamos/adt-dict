@@ -81,5 +81,5 @@ int main(void){
 		std::cout << dicTest << std::endl;
 	}
 
-	// std::cout << ">> Successful execution\n";
+	std::cout << ">> Successful execution\n";
 }

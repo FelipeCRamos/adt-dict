@@ -86,12 +86,15 @@ bool DSAL::remove( const Key & _x, Data & _s ){
 
 	NodeAL * _temp = new NodeAL[this->mi_Capacity];
 
+	// if( keyIndex == this->mi_Lenght ) this->mi_Lenght -= 1;
+
 	for( long int i = 0; i <= this->mi_Lenght; i++ ){
+		// std::cout << "> mi_Capacity = " << this->mi_Capacity << std::endl;
 		if( i >= keyIndex and i < this->mi_Capacity - 1 ){
 			// std::cout << ">> _temp["<<i<<"] = mpt_Data["<< i + 1 <<"]\n";
 			_temp[i].id = this->mpt_Data[i+1].id;	
 			_temp[i].info = this->mpt_Data[i+1].info;	
-		} else if( i != this->mi_Capacity-1 ){
+		} else if( i < this->mi_Capacity ){
 			// std::cout << ">> _temp["<<i<<"] = mpt_Data["<< i <<"]\n";
 			_temp[i].id = this->mpt_Data[i].id;	
 			_temp[i].info = this->mpt_Data[i].info;	

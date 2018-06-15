@@ -66,6 +66,19 @@ int main(void){
 		}
 
 		std::cout << dicTest << std::endl;
+
+		int c = 0;
+		for( auto &i : people ){
+			if( c++ % 2 == 0 ){
+				std::cout << "Testing remove(" << i.first << ")\n";
+				std::string stub;
+				bool status = dicTest.remove( i.first, stub );
+				// std::cout << dicTest << std::endl;
+				if( status ) std::cout << "Success!\n";
+				else std::cout << "ERROR: Key not found!\n";
+			}
+		}
+		std::cout << dicTest << std::endl;
 	}
 
 	// std::cout << ">> Successful execution\n";

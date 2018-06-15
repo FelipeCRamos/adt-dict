@@ -1,27 +1,27 @@
 #include "dsal.hpp"
 
-int DSAL::_search( const Key & _x ) const{
+long int DSAL::_search( const Key & _x ) const{
 	// TODO: Binary search
-	if( mi_Capacity == 0 ){
+	if( this->mi_Capacity == 0 ){
 		return -1;
 	}
 
-	for( int i = 0; i < this->mi_Capacity; i++ ){
-		if( _x == mpt_Data[i].id ){
+	for( long int i = 0; i < this->mi_Capacity; i++ ){
+		if( _x == this->mpt_Data[i].id ){
 			return i;
 		}
 	}	
 	return -1;
 }
 
-size_t DSAL::where( const Key & _x, const bool _flag ) const{
-	if( mi_Lenght == 0 or mi_Capacity == 0 ) return 0;		// error
+size_t DSAL::where( const Key & _x ) const{
+	if( this->mi_Lenght == 0 or this->mi_Capacity == 0 ) return 0;		// error
 
-	size_t maxi = 0;
+	size_t _maximum = 0;
 
 	std::pair<size_t, Key> _prev( 0, this->mpt_Data[0].id );
-	if( mi_Lenght == 1 ){
-		if( mpt_Data[0].id > _x ){
+	if( this->mi_Lenght == 1 ){
+		if( this->mpt_Data[0].id > _x ){
 			_prev.first = 0;
 		} else {
 			_prev.first = 1;
@@ -29,9 +29,9 @@ size_t DSAL::where( const Key & _x, const bool _flag ) const{
 	} else {
 		/* After this for-loop, the _prev should have the bigger smallest value
 		 * before the Key _x */
-		for( int i = 0; i < mi_Capacity; i++ ){
-			if( _x > mpt_Data[i].id ){
-				maxi++;
+		for( long int i = 0; i < this->mi_Capacity; i++ ){
+			if( _x > this->mpt_Data[i].id ){
+				_maximum++;
 				_prev.first = i;
 			} else {
 				_prev.first += 1;
@@ -39,8 +39,8 @@ size_t DSAL::where( const Key & _x, const bool _flag ) const{
 			}
 		}
 	}
-	if( maxi == mi_Lenght ){
-		_prev.first = mi_Lenght;
+	if( _maximum == this->mi_Lenght ){
+		_prev.first = this->mi_Lenght;
 	}
 
 	return _prev.first;	
@@ -52,9 +52,9 @@ size_t DSAL::reserve( const size_t _size, const Key & _x ){
 	/* Copies all the mpt_Data to the _temp, leaving a blank space where the
 	 * NodeAL element will be */
 
-	size_t _newKeyIndex = where( _x, true );	// index where the _x will be 
+	size_t _newKeyIndex = where( _x );	// index where the _x will be 
 
-	for( int i = 0, ri = 0; i < mi_Capacity; i++ ){
+	for( long int i = 0, ri = 0; i < this->mi_Capacity; i++ ){
 		if( i != _newKeyIndex ){
 			_temp[ri].id = this->mpt_Data[i].id;
 			_temp[ri].info = this->mpt_Data[i].info;
@@ -69,7 +69,7 @@ size_t DSAL::reserve( const size_t _size, const Key & _x ){
 		}
 	}
 
-	delete [] mpt_Data;
+	delete [] this->mpt_Data;
 
 	this->mpt_Data = _temp;
 	this->mi_Capacity = _size;
@@ -78,16 +78,42 @@ size_t DSAL::reserve( const size_t _size, const Key & _x ){
 }
 
 bool DSAL::remove( const Key & _x, Data & _s ){
-	// TODO
-	return true;	// stub
+	long int keyIndex = _search( _x );
+
+	if( keyIndex == -1 ){
+		return false;	// The key doesn't exist
+	}
+
+	NodeAL * _temp = new NodeAL[this->mi_Capacity];
+
+	for( long int i = 0; i <= this->mi_Lenght; i++ ){
+		if( i >= keyIndex and i < this->mi_Capacity - 1 ){
+			// std::cout << ">> _temp["<<i<<"] = mpt_Data["<< i + 1 <<"]\n";
+			_temp[i].id = this->mpt_Data[i+1].id;	
+			_temp[i].info = this->mpt_Data[i+1].info;	
+		} else if( i != this->mi_Capacity-1 ){
+			// std::cout << ">> _temp["<<i<<"] = mpt_Data["<< i <<"]\n";
+			_temp[i].id = this->mpt_Data[i].id;	
+			_temp[i].info = this->mpt_Data[i].info;	
+		}
+	}
+	if( this->mi_Lenght > 0 ){
+		this->mi_Lenght -= 1;
+	}
+
+	delete [] this->mpt_Data;
+	this->mpt_Data = _temp;
+
+	return true;
 }
 
 bool DSAL::insert( const Key & _newKey, const Data & _newInfo ){
-	int keyIndex = _search( _newKey );
-	// //std::cout << ">> insert_debug: entered, _search(" << _newKey << ")="
-		// << keyIndex << std::endl;
+	/* Returns a index if the _newKey already exists, -1 if not */
+	long int keyIndex = _search( _newKey );
+
 	if( keyIndex == -1 ){
-		if( !(mi_Lenght < mi_Capacity) ){
+		if( this->mi_Lenght == this->mi_Capacity ){
+
 			/* it means it needs more space */
 			size_t ins_keyIndex = reserve( mi_Lenght + 1, _newKey );
 
@@ -98,19 +124,23 @@ bool DSAL::insert( const Key & _newKey, const Data & _newInfo ){
 		} else {
 
 			/* doesnt need more space, we just need to find where to put */
-			size_t ins_keyIndex = where( _newKey, false );
+			size_t ins_keyIndex = where( _newKey );
 
 
 			/* shift all elements after ins_keyIndex to right */
-			NodeAL * _temp = new NodeAL[mi_Capacity];
+			NodeAL * _temp = new NodeAL[this->mi_Capacity];
 
 			bool ins_flag = false; 			// control boolean for insertion
 
-			for(int i=0, ri=0; i < mi_Lenght+1 and ri < mi_Capacity; /**/){
+			for(
+					long int i=0, ri=0;
+					i < this->mi_Lenght + 1 and ri < this->mi_Capacity;
+					/**/
+				){
 				if( i == ins_keyIndex and !ins_flag ){
-					ins_flag = true;
 					_temp[ri].id = _newKey;
 					_temp[ri].info = _newInfo;
+					ins_flag = true;
 					ri++;
 				} else {
 					_temp[ri].id = mpt_Data[i].id;
@@ -120,7 +150,7 @@ bool DSAL::insert( const Key & _newKey, const Data & _newInfo ){
 			}
 
 			/* _temp will be the new mpt_Data */
-			delete [] mpt_Data;
+			delete [] this->mpt_Data;
 			this->mpt_Data = _temp;
 
 		}
@@ -131,7 +161,7 @@ bool DSAL::insert( const Key & _newKey, const Data & _newInfo ){
 		this->mpt_Data[keyIndex].info = _newInfo;
 	}
 
-	return true;	// stub
+	return true;
 }
 
 DSAL::Key DSAL::min() const{
@@ -143,8 +173,8 @@ DSAL::Key DSAL::max() const{
 }
 
 bool DSAL::sucessor( const Key & _x, Key & _y ) const{
-	int keyIndex = _search(_x);
-	if( keyIndex + 1 < mi_Capacity and keyIndex != -1 ){
+	long int keyIndex = _search(_x);
+	if( keyIndex + 1 < this->mi_Capacity and keyIndex != -1 ){
 		_y = this->mpt_Data[keyIndex + 1].id;
 		return true;
 	}
@@ -152,7 +182,7 @@ bool DSAL::sucessor( const Key & _x, Key & _y ) const{
 }
 
 bool DSAL::predecessor( const Key & _x, Key & _y ) const{
-	int keyIndex = _search(_x);
+	long int keyIndex = _search(_x);
 	if( keyIndex - 1 >= 0 and keyIndex != -1 ){
 		_y = this->mpt_Data[keyIndex + 1].id;
 		return true;

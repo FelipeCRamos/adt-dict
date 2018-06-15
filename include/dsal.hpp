@@ -20,17 +20,22 @@ class DSAL : public DAL{
 		/** Retrieves the maximum key from the dictionary. */
 		Key max() const;
 
-		/** Retrieves on `_y` the next key to `_x`, if exists (true) */
+		/** Retrieves on `_y` the next key to `_x`, if exists (true). */
 		bool sucessor( const Key & _x, Key & _y ) const;
 
-		/** Retrieves on `_y` the prev key to `_x`, if exists (true) */
+		/** Retrieves on `_y` the prev key to `_x`, if exists (true). */
 		bool predecessor( const Key & _x, Key & _y ) const;
 	private:
 
-		int _search( const Key & _x ) const;
+		/** Discover the index of the Key & _x (if exists), returns -1 otherwise. */
+		long int _search( const Key & _x ) const;
 
-		size_t where( const Key & _x, const bool _flag ) const;
+		/** Returns where the Key & _x should be inserted. */
+		size_t where( const Key & _x ) const;
 
+		/** Increase the array mpt_Data size by _size, and find an index for
+		 * `_key` to be, leaving a blank space on there. 
+		 * \return	The recommended index for `_key` to be inserted */
 		size_t reserve( const size_t _size, const Key & _x );
 			
 };

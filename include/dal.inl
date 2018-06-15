@@ -124,21 +124,59 @@ DAL::Key DAL::max() const{
 }
 
 bool DAL::sucessor( const Key & _x, Key &_y ) const{
-	int keyIndex = _search( _x );
-	if( keyIndex == -1 ) return false;
-	if( keyIndex + 1 < mi_Capacity ){
+	int keyIndex = _search( _x );		// discover current index of the key
+
+	/* Optimizations */
+	if( keyIndex == -1 ) 			return false;	// it's not even a key
+	if( keyIndex + 1 == mi_Lenght )	return false;	// it's the last element
+	if( _x == max() ) 				return false;	// it's already the maximum
+	if( keyIndex + 1 == mi_Lenght and this->mpt_Data[mi_Lenght-1].id > _x ){
 		_y = this->mpt_Data[keyIndex+1].id;
-		return true;
+	} else if ( keyIndex + 1 == mi_Lenght ){
+		return false;
 	}
-	return false;
+
+	/* Begin the real search for the next key */
+	/* Basically, get the minimal in the range (keyIndex, mi_Lenght] */
+
+	Key _buf = this->mpt_Data[keyIndex+1].id;
+	bool flag_tripped = true;
+
+	for( long int i = keyIndex + 1; i < mi_Lenght; i++ ){
+		bool _min_max = (this->mpt_Data[i].id < _buf or flag_tripped);
+		if( this->mpt_Data[i].id > _x and _min_max ){
+			flag_tripped = false;
+			_buf = this->mpt_Data[i].id;
+		}
+	}
+	_y = _buf;
+	return true;
 }
 
 bool DAL::predecessor( const Key & _x, Key &_y ) const{
 	int keyIndex = _search( _x );
-	if( keyIndex == -1 ) return false;
-	if( keyIndex - 1 >= 0 ){
-		_y = this->mpt_Data[keyIndex-1].id;
+	// std::cout << ">> keyIndex = " << keyIndex << std::endl;
+
+	if( keyIndex <= 0 ) 		return false;	// first key or doesn't exist
+	if( _x == min() )			return false;	// it's the min() element
+
+	if( keyIndex == 1 and this->mpt_Data[0].id < _x ){
+		_y = this->mpt_Data[0].id; // it's the second element
 		return true;
+	} else if( keyIndex == 1 ){
+		return false;				// does not exist
 	}
-	return false;
+
+	Key _buf = this->mpt_Data[keyIndex-1].id;
+	bool flag_tripped = true;
+	
+	for( long int i = keyIndex; i >= 0; i-- ){
+		bool _max_min = (this->mpt_Data[i].id > _buf or flag_tripped);
+		if( this->mpt_Data[i].id < _x and _max_min ){
+			flag_tripped = false;
+			_buf = this->mpt_Data[i].id;
+		}
+	}
+	_y = _buf;
+	return true;
 }

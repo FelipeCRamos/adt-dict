@@ -102,6 +102,7 @@ bool DSAL::remove( const Key & _x, Data & _s ){
 	}
 	if( this->mi_Lenght > 0 ){
 		this->mi_Lenght -= 1;
+		std::cout << "Decrementou o this->mi_Lenght (" << mi_Lenght << ")\n";
 	}
 
 	delete [] this->mpt_Data;
@@ -172,7 +173,7 @@ DSAL::Key DSAL::min() const{
 }
 
 DSAL::Key DSAL::max() const{
-	return this->mpt_Data[mi_Lenght].id;
+	return this->mpt_Data[mi_Lenght - 1].id;
 }
 
 bool DSAL::sucessor( const Key & _x, Key & _y ) const{
@@ -187,7 +188,7 @@ bool DSAL::sucessor( const Key & _x, Key & _y ) const{
 bool DSAL::predecessor( const Key & _x, Key & _y ) const{
 	long int keyIndex = _search(_x);
 	if( keyIndex - 1 >= 0 and keyIndex != -1 ){
-		_y = this->mpt_Data[keyIndex + 1].id;
+		_y = this->mpt_Data[keyIndex - 1].id;
 		return true;
 	}
 	return false;

@@ -2,9 +2,10 @@
 #include "dsal.hpp"
 #include "dal.hpp"
 
-#define dal_test true 
-#define dsal_test false
-#define remove_func_test false
+#define debug_mode false
+#define dal_test false
+#define dsal_test true
+#define remove_func_test true
 
 int main(void){
 
@@ -21,108 +22,104 @@ int main(void){
 		std::pair<int, std::string> (14, "Bola")
 	};
 
+
+	
 	if(dal_test){
+		if(!debug_mode) std::cout << "-----------TESTING DAL-----------------------------\n";
 	/* DAL TEST {{{*/
 		DAL dicTest(3);
-		std::cout << "Testing DAL\n";
 
 		for( auto &i : people ){
-			std::cout << "Testing insert(" << i.first << ", " << i.second << ")\n";
+			if(!debug_mode) std::cout << "Testing insert(" << i.first << ", " << i.second << ")\n";
 			dicTest.insert( i.first, i.second );
 		}
 
-		std::cout << dicTest << std::endl;
+		if(!debug_mode) std::cout << dicTest << std::endl;
 
 		int c = 0;
 		if( remove_func_test ){
 			for( auto &i : people ){
 				if( c++ % 2 != 0 ){
-					std::cout << "Testing remove(" << i.first << ")\n";
+					if(!debug_mode) std::cout << "Testing remove(" << i.first << ")\n";
 					dicTest.remove( i.first );
 				}
 			}
-			std::cout << dicTest << std::endl;
+			if(!debug_mode) std::cout << dicTest << std::endl;
 		}
 
-		std::cout << "Minimal Key: " << dicTest.min() << std::endl;
+		if(!debug_mode) std::cout << "Minimal Key: " << dicTest.min() << std::endl;
 		{
-			int _key_f = 90;
-			std::cout << _key_f << " sucessor:\n";
+			int _key_f = 19;
+			if(!debug_mode) std::cout << _key_f << " sucessor:\n";
 			int nextKey;
 			bool _flag_suc = dicTest.sucessor( _key_f, nextKey );
 			if( _flag_suc ){
-				std::cout << "Success! Key: ";
-				std::cout << nextKey << std::endl;
+				if(!debug_mode) std::cout << "Success! Key: ";
+				if(!debug_mode) std::cout << nextKey << std::endl;
 			} else {
-				std::cout << "ERROR: Key not found! (or something went wrong)\n";
+				if(!debug_mode) std::cout << "ERROR: Key not found! (or something went wrong)\n";
 			}
 		}
 
-		std::cout << "Maximum Key: " << dicTest.max() << std::endl;
+		if(!debug_mode) std::cout << "Maximum Key: " << dicTest.max() << std::endl;
 		{
-			int _key_f = 122;
-			std::cout << _key_f << " predecessor:\n";
+			int _key_f = 19;
+			if(!debug_mode) std::cout << _key_f << " predecessor:\n";
 			int prevKey;
 			bool _flag_suc = dicTest.predecessor( _key_f, prevKey );
 			if( _flag_suc ){
-				std::cout << "Success! Key: ";
-				std::cout << prevKey << std::endl;
+				if(!debug_mode) std::cout << "Success! Key: ";
+				if(!debug_mode) std::cout << prevKey << std::endl;
 			} else {
-				std::cout << "ERROR: Key not found! (or something went wrong)\n";
+				if(!debug_mode) std::cout << "ERROR: Key not found! (or something went wrong)\n";
 			}
 		}
-
-		// std::cout << "Maximum Key: " << dicTest.max() << std::endl;
-//
-		// std::cout << "Maximum Key Predecessor: ";
-		// int prevKey;
-		// dicTest.predecessor( dicTest.max(), prevKey );
-		// std::cout << prevKey << std::endl;
 	}
 	/*}}}*/
 	if(dsal_test){
+		if(!debug_mode) std::cout << "-----------TESTING DSAL----------------------------\n";
 	/* DSAL TEST {{{*/
 		DSAL dicTest(3);
 		for( auto &i : people ){
-			std::cout << "Testing insert(" << i.first << ", " << i.second << ")\n";
+			if(!debug_mode) std::cout << "Testing insert(" << i.first << ", " << i.second << ")\n";
 			dicTest.insert( i.first, i.second );
-			// std::cout << dicTest << std::endl;
+			// if(!debug_mode) std::cout << dicTest << std::endl;
 
-			std::cout << "Success!\n";
+			if(!debug_mode) std::cout << "Success!\n";
 		}
 
-		std::cout << dicTest << std::endl;
+		if(!debug_mode) std::cout << dicTest << std::endl;
 
 		int c = 0;
 		for( auto &i : people ){
 			if( c++ % 2 == 0 ){
-				std::cout << "Testing remove(" << i.first << ")\n";
+				if(!debug_mode) std::cout << "Testing remove(" << i.first << ")\n";
 				std::string stub;
 				bool status = dicTest.remove( i.first, stub );
-				// std::cout << dicTest << std::endl;
-				if( status ) std::cout << "Success!\n";
-				else std::cout << "ERROR: Key not found!\n";
+				// if(!debug_mode) std::cout << dicTest << std::endl;
+				if( status ){if(!debug_mode) std::cout << "Success!\n";}
+				else{if(!debug_mode) std::cout << "ERROR: Key not found!\n";}
 			}
 		}
-		std::cout << dicTest << std::endl;
+		if(!debug_mode) std::cout << dicTest << std::endl;
 
-		std::cout << "Minimal Key: " << dicTest.min() << std::endl;
+		if(!debug_mode) std::cout << "Minimal Key: " << dicTest.min() << std::endl;
 
-		std::cout << "Minimal Key sucessor: ";
+		if(!debug_mode) std::cout << "Minimal Key sucessor: ";
 		int nextKey;
 		dicTest.sucessor( dicTest.min(), nextKey );
-		std::cout << nextKey << std::endl;
+		if(!debug_mode) std::cout << nextKey << std::endl;
 
 
-		std::cout << "Maximum Key: " << dicTest.max() << std::endl;
+		if(!debug_mode) std::cout << "Maximum Key: " << dicTest.max() << std::endl;
 
-		std::cout << "Maximum Key Predecessor: ";
+		if(!debug_mode) std::cout << "Maximum Key Predecessor: ";
 		int prevKey;
 		dicTest.predecessor( dicTest.max(), prevKey );
-		std::cout << prevKey << std::endl;
+		if(!debug_mode) std::cout << prevKey << std::endl;
 	}
 	/*}}}*/
 
-	std::cout << ">> Successful execution\n";
+	if(!debug_mode) std::cout << ">> Successful execution\n";
 	return 0;
 }

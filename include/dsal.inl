@@ -1,72 +1,48 @@
 #include "dsal.hpp"
 
 long int DSAL::_search( const Key & _x ) const{
-	// long int first = 0;
-	// long int last = this->mi_Lenght;
-	// long int middle = this->mi_Lenght / 2;
-//
-	// while(first != last){
-		// long int middle = first + (last - first)/2;
-		// if( this->mpt_Data[middle].id == _x ){
-			// // if _x *is* middle
-			// return middle;
-		// }else{
-			// if( this->mpt_Data[middle].id > _x )
-				// last = middle; 			// if the _x is in smaller than middle
-			// else
-				// first = middle + 1; 	// if the _x is bigger than middle
-		// }
-	// }
-	// return -1;
+	long int first = 0;
+	long int last = this->mi_Lenght;
 
-	if( this->mi_Capacity == 0 ){
-		return -1;
-	}
-
-	for( long int i = 0; i < this->mi_Capacity; i++ ){
-		if( _x == this->mpt_Data[i].id ){
-			return i;
+	while(first != last){
+		long int middle = first + (last - first)/2;
+		if( this->mpt_Data[middle].id == _x ){
+			// if _x *is* middle
+			return middle;
+		}else{
+			if( this->mpt_Data[middle].id > _x )
+				last = middle; 			// if the _x is in smaller than middle
+			else
+				first = middle + 1; 	// if the _x is bigger than middle
 		}
 	}
 	return -1;
 }
 
 size_t DSAL::where( const Key & _x ) const{
-	if( this->mi_Lenght == 0 or this->mi_Capacity == 0 ) return 0;		// error
+	if( this->mi_Lenght == 0 or this->mi_Capacity == 0 )
+		return 0;		// error
 
 	long int _ipos = 0;		// insert position
-	size_t _maximum = 0;
 
-	// if( this->mi_Lenght == 1 ){
-		// if( this->mpt_Data[0].id > _x ){
-			// _ipos = 0;
-		// } else {
-			// _ipos = 1;
-		// }
-	// } else {
-		/* After this for-loop, the _prev should have the bigger smallest value
-		 * before the Key _x */
-		for( long int i = 0; i < this->mi_Lenght; i++ ){
+	/* After this for-loop, the _prev should have the bigger smallest value
+	 * before the Key _x */
+	for( long int i = 0; i < this->mi_Lenght; i++ ){
 
-			if( where_debug )std::cout << "\t\ti = " << i
-				<< ", _x = " << _x
-				<< ", mpt_Data[i].id = " << this->mpt_Data[i].id << "\n";
+		if(where_debug) std::cout << "\t\ti = " << i << ", _x = " << _x
+			<< ", mpt_Data[i].id = " << this->mpt_Data[i].id << "\n";
 
-			if( _x < this->mpt_Data[i].id ){
-				if( where_debug ) std::cout << "\t\t\t_x < mpt_Data[i]\n";
-				_ipos = i;
-				break;
-
-			} else {
-				if( where_debug ) std::cout << "\t\t\t_x > mpt_Data[i]\n";
-				_ipos = i;
-			}
+		if( _x < this->mpt_Data[i].id ){
+			if(where_debug) std::cout << "\t\t\t_x < mpt_Data[i]\n";
+			_ipos = i;
+			break;
+		} else {
+			if(where_debug) std::cout << "\t\t\t_x > mpt_Data[i]\n";
+			_ipos = i;
 		}
-	// }
-
-	if( where_debug ){
-		std::cout << ">> where function returned " << _ipos << std::endl;
 	}
+
+	if(where_debug) std::cout << "\t\t>> where() = " << _ipos << std::endl;
 
 	return _ipos;	
 }
@@ -128,7 +104,7 @@ bool DSAL::remove( const Key & _x, Data & _s ){
 	}
 	if( this->mi_Lenght > 0 ){
 		this->mi_Lenght -= 1;
-		if(debug) std::cout << "Decrementou o this->mi_Lenght (" << mi_Lenght << ")\n";
+		if(debug) std::cout << "this->mi_Lenght-- (" << mi_Lenght << ")\n";
 	}
 
 	delete [] this->mpt_Data;

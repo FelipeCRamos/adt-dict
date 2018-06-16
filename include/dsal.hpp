@@ -1,6 +1,9 @@
 #ifndef _DSAL_HPP_
 #define _DSAL_HPP_
 #include "dal.hpp"
+#define insert_debug false
+#define where_debug false
+#define reserve_debug false
 
 class DSAL : public DAL{
 	public:
@@ -25,10 +28,10 @@ class DSAL : public DAL{
 
 		/** Retrieves on `_y` the prev key to `_x`, if exists (true). */
 		bool predecessor( const Key & _x, Key & _y ) const;
-	private:
 
 		/** Discover the index of the Key & _x (if exists), returns -1 otherwise. */
 		long int _search( const Key & _x ) const;
+	private:
 
 		/** Returns where the Key & _x should be inserted. */
 		size_t where( const Key & _x ) const;

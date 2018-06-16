@@ -142,7 +142,7 @@ bool DAL::sucessor( const Key & _x, Key &_y ) const{
 	Key _buf = this->mpt_Data[keyIndex+1].id;
 	bool flag_tripped = true;
 
-	for( long int i = keyIndex + 1; i < mi_Lenght; i++ ){
+	for( long int i = 0; i < mi_Lenght; i++ ){
 		bool _min_max = (this->mpt_Data[i].id < _buf or flag_tripped);
 		if( this->mpt_Data[i].id > _x and _min_max ){
 			flag_tripped = false;
@@ -155,22 +155,15 @@ bool DAL::sucessor( const Key & _x, Key &_y ) const{
 
 bool DAL::predecessor( const Key & _x, Key &_y ) const{
 	int keyIndex = _search( _x );
-	// std::cout << ">> keyIndex = " << keyIndex << std::endl;
+	if(debug)
+		std::cout << ">> keyIndex = " << keyIndex << std::endl;
 
-	if( keyIndex <= 0 ) 		return false;	// first key or doesn't exist
 	if( _x == min() )			return false;	// it's the min() element
-
-	if( keyIndex == 1 and this->mpt_Data[0].id < _x ){
-		_y = this->mpt_Data[0].id; // it's the second element
-		return true;
-	} else if( keyIndex == 1 ){
-		return false;				// does not exist
-	}
 
 	Key _buf = this->mpt_Data[keyIndex-1].id;
 	bool flag_tripped = true;
 	
-	for( long int i = keyIndex; i >= 0; i-- ){
+	for( long int i = mi_Lenght; i >= 0; i-- ){
 		bool _max_min = (this->mpt_Data[i].id > _buf or flag_tripped);
 		if( this->mpt_Data[i].id < _x and _max_min ){
 			flag_tripped = false;

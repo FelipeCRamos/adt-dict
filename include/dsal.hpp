@@ -1,14 +1,21 @@
 #ifndef _DSAL_HPP_
 #define _DSAL_HPP_
+
 #include "dal.hpp"
+
 #define insert_debug false
 #define where_debug false
 #define reserve_debug false
 
-class DSAL : public DAL{
+template <class Key, class Data, class KeyComparator>
+class DSAL : public DAL<Key, Data, KeyComparator>{
+
+		// using Key = int;
+		using NodeAL = typename DAL<Key, Data, KeyComparator>::NodeAL;
+
 	public:
 		/** Default constructor of DSAL class. */
-		DSAL( int _MaxSz ) : DAL( _MaxSz ){ /* empty */ };
+		DSAL( int _MaxSz ) : DAL<Key, Data, KeyComparator>( _MaxSz ){ /* empty */ };
 		virtual ~DSAL(){ /* Empty */ };
 
 		/** Removes an item from the list. */
@@ -31,8 +38,8 @@ class DSAL : public DAL{
 
 		/** Discover the index of the Key & _x (if exists), returns -1 otherwise. */
 		long int _search( const Key & _x ) const;
-	private:
 
+	private:
 		/** Returns where the Key & _x should be inserted. */
 		size_t where( const Key & _x ) const;
 
@@ -40,7 +47,6 @@ class DSAL : public DAL{
 		 * `_key` to be, leaving a blank space on there. 
 		 * \return	The recommended index for `_key` to be inserted */
 		size_t reserve( const size_t _size, const Key & _x );
-			
 };
 
 #include "dsal.inl"

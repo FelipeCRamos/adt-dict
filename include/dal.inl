@@ -1,13 +1,15 @@
 #include "dal.hpp"
 
-DAL::DAL( int _MaxSz ){
+template <class Key, class Data, class KeyComparator>
+DAL<Key, Data, KeyComparator>::DAL( int _MaxSz ){
 	this->mi_Lenght = 0;
 	this->mi_Capacity = _MaxSz;
 	this->mpt_Data = new NodeAL[_MaxSz];
 }
 
 /** Inside function, to check if already has a Key `_x` */
-int DAL::_search( const Key & _x ) const{
+template <class Key, class Data, class KeyComparator>
+int DAL<Key, Data, KeyComparator>::_search( const Key & _x ) const{
 	if(debug){
 		std::cout << ">> Inside _search(" << _x << "): ";
 		std::cout << "mi_Capacity = " << mi_Capacity << "\n";
@@ -24,7 +26,8 @@ int DAL::_search( const Key & _x ) const{
 	return -1;
 }
 
-bool DAL::search( const Key & _x, Data & _s ) const{
+template <class Key, class Data, class KeyComparator>
+bool DAL<Key, Data, KeyComparator>::search( const Key & _x, Data & _s ) const{
 	for( int i = 0; i < this->mi_Capacity; i++ ){
 		if( _x == this->mpt_Data[i].id ){
 			_s = mpt_Data[i].info;
@@ -34,7 +37,8 @@ bool DAL::search( const Key & _x, Data & _s ) const{
 	return false;
 }
 
-bool DAL::insert( const Key & _newKey, const Data & _newInfo ){
+template <class Key, class Data, class KeyComparator>
+bool DAL<Key, Data, KeyComparator>::insert( const Key & _newKey, const Data & _newInfo ){
 	// search for a key, if exists: substitute
 	int keyIndex = _search( _newKey );	// returns -1 if already exists
 	
@@ -56,7 +60,8 @@ bool DAL::insert( const Key & _newKey, const Data & _newInfo ){
 	return true;	// stub
 }
 
-bool DAL::remove( const Key & _x ){		// Why Data & _s?
+template <class Key, class Data, class KeyComparator>
+bool DAL<Key, Data, KeyComparator>::remove( const Key & _x ){		// Why Data & _s?
 	int keyIndex = _search( _x );
 	if(debug) std::cout << "_search( _x ) = " << keyIndex << std::endl;
 
@@ -84,7 +89,8 @@ bool DAL::remove( const Key & _x ){		// Why Data & _s?
 	return true;
 }
 
-bool DAL::reserve( size_t _sizeNeeded ){
+template <class Key, class Data, class KeyComparator>
+bool DAL<Key, Data, KeyComparator>::reserve( size_t _sizeNeeded ){
 	if(debug){
 		std::cout << "Entered on reserve(" << _sizeNeeded << ")\n";
 	}
@@ -103,7 +109,8 @@ bool DAL::reserve( size_t _sizeNeeded ){
 	return true;
 }
 
-DAL::Key DAL::min() const{
+template <class Key, class Data, class KeyComparator>
+Key DAL<Key, Data, KeyComparator>::min() const{
 	Key _min = this->mpt_Data[0].id;
 	for( int i = 1; i < mi_Capacity; i++ ){
 		if( _min > mpt_Data[i].id ){
@@ -113,7 +120,8 @@ DAL::Key DAL::min() const{
 	return _min;
 }
 
-DAL::Key DAL::max() const{
+template <class Key, class Data, class KeyComparator>
+Key DAL<Key, Data, KeyComparator>::max() const{
 	Key _max= this->mpt_Data[0].id;
 	for( int i = 1; i < mi_Capacity; i++ ){
 		if( _max < mpt_Data[i].id ){
@@ -123,7 +131,8 @@ DAL::Key DAL::max() const{
 	return _max;
 }
 
-bool DAL::sucessor( const Key & _x, Key &_y ) const{
+template <class Key, class Data, class KeyComparator>
+bool DAL<Key, Data, KeyComparator>::sucessor( const Key & _x, Key &_y ) const{
 	int keyIndex = _search( _x );		// discover current index of the key
 
 	/* Optimizations */
@@ -153,7 +162,8 @@ bool DAL::sucessor( const Key & _x, Key &_y ) const{
 	return true;
 }
 
-bool DAL::predecessor( const Key & _x, Key &_y ) const{
+template <class Key, class Data, class KeyComparator>
+bool DAL<Key, Data, KeyComparator>::predecessor( const Key & _x, Key &_y ) const{
 	int keyIndex = _search( _x );
 	if(debug)
 		std::cout << ">> keyIndex = " << keyIndex << std::endl;
@@ -163,7 +173,7 @@ bool DAL::predecessor( const Key & _x, Key &_y ) const{
 	Key _buf = this->mpt_Data[keyIndex-1].id;
 	bool flag_tripped = true;
 	
-	for( long int i = mi_Lenght; i >= 0; i-- ){
+	for( long int i = mi_Lenght-1; i >= 0; i-- ){
 		bool _max_min = (this->mpt_Data[i].id > _buf or flag_tripped);
 		if( this->mpt_Data[i].id < _x and _max_min ){
 			flag_tripped = false;

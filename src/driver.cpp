@@ -3,9 +3,16 @@
 #include "dal.hpp"
 
 #define debug_mode false
-#define dal_test false
+#define dal_test true
 #define dsal_test true
 #define remove_func_test true
+
+class MyKeyComparator {
+	public:
+		bool operator()( const int & lhs, const int & rhs ) const{
+			return lhs < rhs;
+		}
+};
 
 int main(void){
 
@@ -27,7 +34,7 @@ int main(void){
 	if(dal_test){
 		if(!debug_mode) std::cout << "-----------TESTING DAL-----------------------------\n";
 	/* DAL TEST {{{*/
-		DAL dicTest(3);
+		DAL<int,std::string,MyKeyComparator> dicTest(3);
 
 		for( auto &i : people ){
 			if(!debug_mode) std::cout << "Testing insert(" << i.first << ", " << i.second << ")\n";
@@ -63,7 +70,7 @@ int main(void){
 
 		if(!debug_mode) std::cout << "Maximum Key: " << dicTest.max() << std::endl;
 		{
-			int _key_f = 19;
+			int _key_f = 12;
 			if(!debug_mode) std::cout << _key_f << " predecessor:\n";
 			int prevKey;
 			bool _flag_suc = dicTest.predecessor( _key_f, prevKey );
@@ -79,7 +86,7 @@ int main(void){
 	if(dsal_test){
 		if(!debug_mode) std::cout << "-----------TESTING DSAL----------------------------\n";
 	/* DSAL TEST {{{*/
-		DSAL dicTest(3);
+		DSAL<int, std::string, MyKeyComparator> dicTest(3);
 		for( auto &i : people ){
 			if(!debug_mode) std::cout << "Testing insert(" << i.first << ", " << i.second << ")\n";
 			dicTest.insert( i.first, i.second );

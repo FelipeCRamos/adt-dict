@@ -1,6 +1,7 @@
 #include "dsal.hpp"
 
-long int DSAL::_search( const Key & _x ) const{
+template <class Key, class Data, class KeyComparator>
+long int DSAL<Key, Data, KeyComparator>::_search( const Key & _x ) const{
 	long int first = 0;
 	long int last = this->mi_Lenght;
 
@@ -19,7 +20,8 @@ long int DSAL::_search( const Key & _x ) const{
 	return -1;
 }
 
-size_t DSAL::where( const Key & _x ) const{
+template <class Key, class Data, class KeyComparator>
+size_t DSAL<Key, Data, KeyComparator>::where( const Key & _x ) const{
 	if( this->mi_Lenght == 0 or this->mi_Capacity == 0 )
 		return 0;		// error
 
@@ -47,7 +49,8 @@ size_t DSAL::where( const Key & _x ) const{
 	return _ipos;	
 }
 
-size_t DSAL::reserve( const size_t _size, const Key & _x ){
+template <class Key, class Data, class KeyComparator>
+size_t DSAL<Key, Data, KeyComparator>::reserve( const size_t _size, const Key & _x ){
 	NodeAL * _temp = new NodeAL[_size];		// the new mpt_Data
 
 	/* Copies all the mpt_Data to the _temp, leaving a blank space where the
@@ -77,7 +80,8 @@ size_t DSAL::reserve( const size_t _size, const Key & _x ){
 	return _newKeyIndex;
 }
 
-bool DSAL::remove( const Key & _x, Data & _s ){
+template <class Key, class Data, class KeyComparator>
+bool DSAL<Key, Data, KeyComparator>::remove( const Key & _x, Data & _s ){
 	long int keyIndex = _search( _x );
 
 	if( keyIndex == -1 ){
@@ -104,7 +108,7 @@ bool DSAL::remove( const Key & _x, Data & _s ){
 	}
 	if( this->mi_Lenght > 0 ){
 		this->mi_Lenght -= 1;
-		if(debug) std::cout << "this->mi_Lenght-- (" << mi_Lenght << ")\n";
+		if(debug) std::cout << "this->mi_Lenght-- (" << this->mi_Lenght << ")\n";
 	}
 
 	delete [] this->mpt_Data;
@@ -113,7 +117,8 @@ bool DSAL::remove( const Key & _x, Data & _s ){
 	return true;
 }
 
-bool DSAL::insert( const Key & _newKey, const Data & _newInfo ){
+template <class Key, class Data, class KeyComparator>
+bool DSAL<Key, Data, KeyComparator>::insert( const Key & _newKey, const Data & _newInfo ){
 	/* Returns a index if the _newKey already exists, -1 if not */
 	long int keyIndex = _search( _newKey );
 	if( insert_debug ){
@@ -131,7 +136,7 @@ bool DSAL::insert( const Key & _newKey, const Data & _newInfo ){
 			}
 			
 			/* it means it needs more space */
-			size_t ins_keyIndex = reserve( mi_Lenght + 1, _newKey );
+			size_t ins_keyIndex = reserve( this->mi_Lenght + 1, _newKey );
 			if( insert_debug ){
 				std::cout << "\t~ Dictionary after reserve() function:\n";
 				std::cout << *this << std::endl;
@@ -170,8 +175,8 @@ bool DSAL::insert( const Key & _newKey, const Data & _newInfo ){
 					ins_flag = true;
 					ri++;
 				} else {
-					_temp[ri].id = mpt_Data[i].id;
-					_temp[ri].info = mpt_Data[i].info;
+					_temp[ri].id = this->mpt_Data[i].id;
+					_temp[ri].info = this->mpt_Data[i].info;
 					ri++, i++;
 				}
 			}
@@ -196,15 +201,18 @@ bool DSAL::insert( const Key & _newKey, const Data & _newInfo ){
 	return true;
 }
 
-DSAL::Key DSAL::min() const{
+template <class Key, class Data, class KeyComparator>
+Key DSAL<Key, Data, KeyComparator>::min() const{
 	return this->mpt_Data[0].id;
 }
 
-DSAL::Key DSAL::max() const{
-	return this->mpt_Data[mi_Lenght - 1].id;
+template <class Key, class Data, class KeyComparator>
+Key DSAL<Key, Data, KeyComparator>::max() const{
+	return this->mpt_Data[this->mi_Lenght - 1].id;
 }
 
-bool DSAL::sucessor( const Key & _x, Key & _y ) const{
+template <class Key, class Data, class KeyComparator>
+bool DSAL<Key, Data, KeyComparator>::sucessor( const Key & _x, Key & _y ) const{
 	long int keyIndex = _search(_x);
 	if( keyIndex + 1 < this->mi_Capacity and keyIndex != -1 ){
 		_y = this->mpt_Data[keyIndex + 1].id;
@@ -213,7 +221,8 @@ bool DSAL::sucessor( const Key & _x, Key & _y ) const{
 	return false;
 }
 
-bool DSAL::predecessor( const Key & _x, Key & _y ) const{
+template <class Key, class Data, class KeyComparator>
+bool DSAL<Key, Data, KeyComparator>::predecessor( const Key & _x, Key & _y ) const{
 	long int keyIndex = _search(_x);
 	if( keyIndex - 1 >= 0 and keyIndex != -1 ){
 		_y = this->mpt_Data[keyIndex - 1].id;

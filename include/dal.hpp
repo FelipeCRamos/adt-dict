@@ -4,16 +4,19 @@
 #include <iostream>
 #include <string>
 
+template <class Key, class Data, class KeyComparator>
 class DAL{
 	protected:
-		using Key = int;			// Key alias
-		// typedef int Key;
-		using Data = std::string;	// Data Alias
+		// using Key = int;			// Key alias
+		// using Data = std::string;	// Data Alias
+
 		struct NodeAL{				// Node alias, containing the pair key-data
 			Key id;
 			Data info;
 			NodeAL(Key _id = Key(), Data _info = Data()): id(_id), info(_info){};
 		};
+
+		KeyComparator compare;		// comparator function
 
 		static const int SIZE=50;	// Default size of the list
 		int mi_Lenght;				// Actual size of the list

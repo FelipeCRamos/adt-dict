@@ -1,10 +1,16 @@
 #include "dal.hpp"
+// template <class Key, class Data, class KeyComparator>
+// DAL<Key, Data, KeyComparator>::DAL( void ){
+	// this->mi_Lenght = 0;
+	// this->mi_Capacity = 50;
+	// this->mpt_Data = new NodeAL[this->mi_Capacity];
+// }
 
 template <class Key, class Data, class KeyComparator>
 DAL<Key, Data, KeyComparator>::DAL( int _MaxSz ){
 	this->mi_Lenght = 0;
 	this->mi_Capacity = _MaxSz;
-	this->mpt_Data = new NodeAL[_MaxSz];
+	this->mpt_Data = new NodeAL[this->mi_Capacity];
 }
 
 /** Inside function, to check if already has a Key `_x` */
@@ -53,21 +59,23 @@ bool DAL<Key, Data, KeyComparator>::insert( const Key & _newKey, const Data & _n
 
 	} else {
 		// it means that the key is already on the mpt_Data
-		this->mpt_Data[keyIndex].id = _newKey;
-		this->mpt_Data[keyIndex].info = _newInfo;
+		return false;
+		// this->mpt_Data[keyIndex].id = _newKey;
+		// this->mpt_Data[keyIndex].info = _newInfo;
 	}
 
 	return true;	// stub
 }
 
 template <class Key, class Data, class KeyComparator>
-bool DAL<Key, Data, KeyComparator>::remove( const Key & _x ){		// Why Data & _s?
+bool DAL<Key, Data, KeyComparator>::remove( const Key & _x, Data & _s ){		// Why Data & _s?
 	int keyIndex = _search( _x );
 	if(debug) std::cout << "_search( _x ) = " << keyIndex << std::endl;
 
 	if( keyIndex == -1 or mi_Capacity == 0 )
 		return false;
 
+	_s = this->mpt_Data[keyIndex].info;
 	NodeAL * _temp = new NodeAL[this->mi_Capacity-1];
 	int _tempIndex = 0;
 
@@ -111,8 +119,12 @@ bool DAL<Key, Data, KeyComparator>::reserve( size_t _sizeNeeded ){
 
 template <class Key, class Data, class KeyComparator>
 Key DAL<Key, Data, KeyComparator>::min() const{
+	if( this->mi_Lenght == 0 ){
+		throw std::out_of_range("ERROR: Dictionary is empty!\n");
+	}
+
 	Key _min = this->mpt_Data[0].id;
-	for( int i = 1; i < mi_Capacity; i++ ){
+	for( int i = 1; i < this->mi_Lenght; i++ ){
 		if( _min > mpt_Data[i].id ){
 			_min = mpt_Data[i].id;
 		}
@@ -122,8 +134,11 @@ Key DAL<Key, Data, KeyComparator>::min() const{
 
 template <class Key, class Data, class KeyComparator>
 Key DAL<Key, Data, KeyComparator>::max() const{
+	if( this->mi_Lenght == 0 ){
+		throw std::out_of_range("ERROR: Dictionary is empty!\n");
+	}
 	Key _max= this->mpt_Data[0].id;
-	for( int i = 1; i < mi_Capacity; i++ ){
+	for( int i = 1; i < this->mi_Lenght; i++ ){
 		if( _max < mpt_Data[i].id ){
 			_max = mpt_Data[i].id;
 		}
@@ -132,7 +147,7 @@ Key DAL<Key, Data, KeyComparator>::max() const{
 }
 
 template <class Key, class Data, class KeyComparator>
-bool DAL<Key, Data, KeyComparator>::sucessor( const Key & _x, Key &_y ) const{
+bool DAL<Key, Data, KeyComparator>::successor( const Key & _x, Key &_y ) const{
 	int keyIndex = _search( _x );		// discover current index of the key
 
 	/* Optimizations */

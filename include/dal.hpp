@@ -3,8 +3,9 @@
 #define debug false
 #include <iostream>
 #include <string>
+#include <functional>
 
-template <class Key, class Data, class KeyComparator>
+template <class Key, class Data, class KeyComparator = std::less<int> >
 class DAL{
 	protected:
 		// using Key = int;			// Key alias
@@ -16,7 +17,7 @@ class DAL{
 			NodeAL(Key _id = Key(), Data _info = Data()): id(_id), info(_info){};
 		};
 
-		KeyComparator compare;		// comparator function
+		// KeyComparator compare;		// comparator function
 
 		static const int SIZE=50;	// Default size of the list
 		int mi_Lenght;				// Actual size of the list
@@ -27,11 +28,12 @@ class DAL{
 
 	public:
 		/** Default constructor of DAL class. */
+		// DAL( void );
 		DAL( int _MaxSz = SIZE );
 		virtual ~DAL(){ if(mpt_Data) delete [] mpt_Data; };
 
 		/** Removes an item from the list. */
-		bool remove( const Key & _x );
+		bool remove( const Key & _x, Data & _s );
 
 		/** Search for an item in the list. */
 		bool search( const Key & _x, Data & _s ) const;
@@ -49,7 +51,7 @@ class DAL{
 		Key max() const;
 
 		/** Retrieves on `_y` the next key to `_x`, if exists (true) */
-		bool sucessor( const Key & _x, Key & _y ) const;
+		bool successor( const Key & _x, Key & _y ) const;
 
 		/** Retrieves on `_y` the prev key to `_x`, if exists (true) */
 		bool predecessor( const Key & _x, Key & _y ) const;

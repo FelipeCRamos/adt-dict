@@ -7,7 +7,7 @@
 #define where_debug false
 #define reserve_debug false
 
-template <class Key, class Data, class KeyComparator>
+template <class Key, class Data, class KeyComparator = std::less<int>>
 class DSAL : public DAL<Key, Data, KeyComparator>{
 
 		// using Key = int;
@@ -15,7 +15,9 @@ class DSAL : public DAL<Key, Data, KeyComparator>{
 
 	public:
 		/** Default constructor of DSAL class. */
-		DSAL( int _MaxSz ) : DAL<Key, Data, KeyComparator>( _MaxSz ){ /* empty */ };
+		// DSAL( void ) : DAL<Key, Data, KeyComparator>( void ){  };
+
+		DSAL( int _MaxSz = DAL<Key, Data, KeyComparator>::SIZE ) : DAL<Key, Data, KeyComparator>( _MaxSz ){};
 		virtual ~DSAL(){ /* Empty */ };
 
 		/** Removes an item from the list. */
@@ -31,7 +33,7 @@ class DSAL : public DAL<Key, Data, KeyComparator>{
 		Key max() const;
 
 		/** Retrieves on `_y` the next key to `_x`, if exists (true). */
-		bool sucessor( const Key & _x, Key & _y ) const;
+		bool successor( const Key & _x, Key & _y ) const;
 
 		/** Retrieves on `_y` the prev key to `_x`, if exists (true). */
 		bool predecessor( const Key & _x, Key & _y ) const;
